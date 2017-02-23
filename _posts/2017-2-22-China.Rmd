@@ -1,0 +1,63 @@
+---
+title: "How far is China ahead?"
+author: "William Hoppes"
+date: "February 22, 2017"
+output: html_document
+---
+
+It still weirds me out that China's economy surpassed America's a while ago and there still hasn't been a big freakout. Before it happened I would have sworn it would be front page news but I almost never hear about it. It's been a few years and I thought I'd check up and see how far ahead they are. Sure, China has slowed down, but 6% annual growth is still a lot better than the 1-2% the US has and after a few years there's gonna be a significant gap.
+
+First, let's grab the data from the World Bank:
+```{r}
+require(WDI)
+require(ggplot2)
+ChinaPPP<-WDI(country="CN", indicator="NY.GDP.MKTP.PP.CD", start=2010, end=2015)
+USPPP<-WDI(country="US", indicator="NY.GDP.MKTP.PP.CD", start=2010, end=2015)
+ChinaAdvantage<-ChinaPPP$NY.GDP.MKTP.PP.CD/USPPP$NY.GDP.MKTP.PP.CD
+plot(x=2010:2015, y=rev(ChinaAdvantage), main="Chinese PPP GDP as a % of US PPP GDP", 
+     type="o", xlab="Year", ylab="% of US PPP GDP")
+abline(a=1, b=0, lty=2)
+```
+
+We're using Purchasing Power Parity GDP because that's generally the more accurate measure. Nominal Chinese GDP still hasn't caught up. I'm curious to see what the 2016 numbers will be but we have a really obvious trend line so guesstimating a Chinese GDP 15% higher than America's seems pretty safe. 
+
+Let's take a look at military spending, which would be the really scary one:
+```{r}
+WDIsearch(string="military")
+#Let's look at Military expenditure as a constant and a percent of GDP
+ChinaMilitary<-merge(WDI(country="CN", indicator="MS.MIL.XPND.CN", start=1995, end=2015),
+                     WDI(country="CN", indicator="MS.MIL.XPND.GD.ZS", start=1995, end=2015))
+#Let's go ahead and ggplot this
+ggplot(data=ChinaMilitary, aes(x=year, y=MS.MIL.XPND.CN))+
+  ggtitle("Chinese Military spending (current LCU)")+
+  geom_line()
+ggplot(data=ChinaMilitary, aes(x=year, y=MS.MIL.XPND.GD.ZS))+
+  ggtitle("Chinese Military spending as % of GDP")+
+  geom_line()
+```
+
+So Chinese Military spending through the roof while actually declining as a %. Not what I expected but makes sense. There's a limit to how quickly you can effectivley expand your military and the Chinese have hit it. 
+
+Ok, one last set of graphs, US comparisons on military spending. R code is just a cut and paste.
+```{r, echo=F}
+ChinaMilitary<-merge(WDI(country="US", indicator="MS.MIL.XPND.CN", start=1995, end=2015),
+                     WDI(country="US", indicator="MS.MIL.XPND.GD.ZS", start=1995, end=2015))
+ggplot(data=ChinaMilitary, aes(x=year, y=MS.MIL.XPND.CN))+
+  ggtitle("US Military spending (current LCU)")+
+  geom_line()
+ggplot(data=ChinaMilitary, aes(x=year, y=MS.MIL.XPND.GD.ZS))+
+  ggtitle("US Military spending as % of GDP")+
+  geom_line()
+```  
+Wow, hold up. US military spending declined by over a full percent!?! 2010 at around 4.6%, 2015 at around 3.3%. That's big! Did I miss the end of military industrial complex? I don't think the measures are mixed up, yeah something might be weird in the LCU measure but % of GDP is dirt simple, no way that's screwed up. [Wikipedia shows 10% decrease in 2013] (https://en.wikipedia.org/wiki/Military_budget_of_the_United_States), Double check graph...big decline starting in 2010, Iraq!. Measure must include wars...sounds dumb when I say that outloud. Check graph again. Yup, big bounce in 2000-2001 so Iraq/Afghanistan, another one around 2006-2007, probably the surge. Ok, but the current spending still feels low. Yeah, it's higher than 2000 but it's lower than 1995 and 2000 is probably artificially low because the late 90's economy was super-hot. Let's recheck but go back to 1989, get more context.  
+```{r, echo=F}
+ChinaMilitary<-merge(WDI(country="US", indicator="MS.MIL.XPND.CN", start=1989, end=2015),
+                     WDI(country="US", indicator="MS.MIL.XPND.GD.ZS", start=1989, end=2015))
+ggplot(data=ChinaMilitary, aes(x=year, y=MS.MIL.XPND.CN))+
+  ggtitle("US Military spending (current LCU)")+
+  geom_line()
+ggplot(data=ChinaMilitary, aes(x=year, y=MS.MIL.XPND.GD.ZS))+
+  ggtitle("US Military spending as % of GDP")+
+  geom_line()
+```
+Wow, spending in 1989 was insane as a % of GDP. Not sure how to interpret current spending. Again, would be very interested in the 2016 numbers but we appear to be reaching an all time low. Kinda don't want to go any further without doing some research. Suffice to say, military spending is not what I thought it was. Oh yeah, and China's GDP is 10-15% larger than America's with a rapidly expanding military.
