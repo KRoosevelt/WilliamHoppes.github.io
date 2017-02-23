@@ -3,6 +3,7 @@ title: "How far is China ahead?"
 author: "William Hoppes"
 date: "February 22, 2017"
 output: html_document
+tags: [chinese, R]
 ---
 
 It still weirds me out that China's economy surpassed America's a while ago and there still hasn't been a big freakout. Before it happened I would have sworn it would be front page news but I almost never hear about it. It's been a few years and I thought I'd check up and see how far ahead they are. Sure, China has slowed down, but 6% annual growth is still a lot better than the 1-2% the US has and after a few years there's gonna be a significant gap.
